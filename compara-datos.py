@@ -10,24 +10,27 @@ resultados = []
 # Verificar las preguntas y respuestas
 for index, row in preguntas_1.iterrows():
     pregunta = row['Pregunta']
-    respuesta_1 = row['Respuesta']
+    respuesta_1 = {row['a'], row['b'], row['c'], row['d'], row['e']}  # Opciones de respuesta de preguntas_1
     
     # Buscar la pregunta en preguntas_gral
     pregunta_gral = preguntas_gral[preguntas_gral['Pregunta'] == pregunta]
     
     if not pregunta_gral.empty:
-        respuesta_gral = pregunta_gral['Respuesta'].values[0]
+        # Opciones de respuesta de preguntas_gral
+        respuesta_gral = {pregunta_gral['a'].values[0], pregunta_gral['b'].values[0], 
+                          pregunta_gral['c'].values[0], pregunta_gral['d'].values[0], 
+                          pregunta_gral['e'].values[0]}
         
-        # Comparar las respuestas
+        # Comparar las respuestas (sin importar el orden)
         if respuesta_1 == respuesta_gral:
-            resultados.append([pregunta, respuesta_1, "Correcto"])
+            resultados.append([pregunta, "Correcto"])
         else:
-            resultados.append([pregunta, respuesta_1, "Incorrecto"])
+            resultados.append([pregunta, "Incorrecto"])
     else:
-        resultados.append([pregunta, respuesta_1, "Pregunta no encontrada"])
+        resultados.append([pregunta, "Pregunta no encontrada"])
 
 # Convertir los resultados en un DataFrame
-resultados_df = pd.DataFrame(resultados, columns=['Pregunta', 'Respuesta', 'Estado'])
+resultados_df = pd.DataFrame(resultados, columns=['Pregunta', 'Estado'])
 
 # Guardar el DataFrame en un nuevo archivo Excel
 resultados_df.to_excel('comparacion_resultados.xlsx', index=False)
